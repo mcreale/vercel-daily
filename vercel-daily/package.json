@@ -10,11 +10,16 @@
     "generate:api": "openapi-typescript spec/api-1.json -o lib/api/v1.d.ts"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.2.0",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.0",
     "next": "16.2.3",
     "openapi-fetch": "^0.15.0",
-    "server-only": "^0.0.1",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "react-remark": "^2.1.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

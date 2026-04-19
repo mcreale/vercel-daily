@@ -16,7 +16,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply font-sans;
 }
 
 .container {
@@ -25,3 +25,24 @@ body {
 .nav-link{
   @apply text-white hover:text-gray-300 transition-colors dark:text-black;
 }
+
+.button {
+  @apply inline-block border bg-black text-white px-6 py-3 rounded-lg font-semibold hover:text-black hover:bg-white  border-black transition-colors duration-300;
+}
+.dark-button{
+  @apply inline-block border bg-white text-black px-6 py-3 rounded-lg font-semibold hover:text-white hover:bg-black border-white transition-colors duration-300;
+}
+.content-block{ 
+  p{
+    @apply mb-4 text-base leading-7 text-zinc-800 dark:text-zinc-200
+  }
+  h2{
+    @apply font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 text-3xl mb-4;
+  }
+  h3{
+    @apply font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 text-2xl mb-4; 
+  }
+  a{
+    @apply underline hover:text-gray-800 dark:hover:text-gray-200 transition-colors;
+  }
+} 
