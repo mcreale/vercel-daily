@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --swiper-navigation-sides-offset: -10px;
+  --swiper-navigation-top-offset: 90%; 
+  --swiper-navigation-color: #ffffff;
+  --swiper-theme-color: #ffffff;
+  --swiper-pagination-color: #ffffff;
+  --swiper-pagination-bullet-inactive-color: #ffffff;
 }
 
 @theme inline {
@@ -46,3 +53,7 @@ body {
     @apply underline hover:text-gray-800 dark:hover:text-gray-200 transition-colors;
   }
 } 
+
+.mySwiper{
+  @apply pb-20!;
+}

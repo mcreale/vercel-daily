@@ -6,10 +6,7 @@ export const metadata = {
   description: "News and insights for modern web developers.",
 };
 
-export const revalidate = 3600 // invalidate every hour
-
 export default async function Articles() {
-
   const featuredArticles = await listArticles({limit:50});
   return (    
       <div className="flex flex-col w-full">

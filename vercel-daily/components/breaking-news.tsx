@@ -1,9 +1,6 @@
-'use client';
-/// load this component on the client side because we don't want to cache this data. it rotates and changes so we don't want to have it cached
 import { BreakingNewsItem } from "@/lib/types/return-types";
 import { faBolt, faNewspaper } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Suspense } from "react";
 
 export default function BreakingNews({breakingNews}: {breakingNews: BreakingNewsItem}) {
   const {summary, urgent} = breakingNews;

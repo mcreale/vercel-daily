@@ -12,6 +12,19 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  cacheComponents: true,
+  cacheLife: {
+    article:{
+      stale: 3600, // 1 hour
+      revalidate: 3600 * 6, // 6 hours
+      expire: 3600 * 24, // 1 day
+    },
+    trending:{
+      stale: 30, // 1 hour
+      revalidate: 3600, // 1 hours
+      expire: 3600 * 24, // 1 day
+    }
+  }
 };
 
 export default nextConfig;

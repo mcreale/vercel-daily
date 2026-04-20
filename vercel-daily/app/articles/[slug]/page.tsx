@@ -1,33 +1,27 @@
 import ContentBlock from "@/components/content-block";
-import { getArticle, listArticles } from "@/lib/data";
+import trendingArticles from "@/components/trending-articles";
+import TrendingArticles from "@/components/trending-articles";
+import { getArticle, getTrendingArticles, listArticles } from "@/lib/data";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export const revalidate = 3600
- 
 export async function generateStaticParams() {
   const articles = await listArticles();
-  const list = articles.data?.data;
-  if (!articles.response.ok || articles.error || !list?.length) {
-    return [];
-  }
-  return list.map((article) => ({
-    slug: article.slug ?? "",
-  }));
-}
-
-
-async function getArticleData({slug}: {slug: string}) {
-  const article = await getArticle(slug);
-  return  article.data?.data;  
+  
+    return articles
+      .filter((article): article is typeof article & { slug: string } =>
+        Boolean(article.slug?.length),
+      )
+    .map((article) => ({ slug: article.slug }));
 }
 
 export async function  generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
 
   const { slug } = await params;
-  const article = await getArticleData({slug});
+  const [article, trendingArticles] = await Promise.all([getArticle(slug), getTrendingArticles()]);
 
   return {
     title: article?.title ?? "Vercel Daily Article: Vercel Daily",
@@ -54,9 +48,10 @@ export default async function ArticlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = await getArticleData({slug});
+  const [article, trendingArticles] = await Promise.all([getArticle(slug), getTrendingArticles()]);
 
   return (
+    <>
     <article className="container py-10">
       <Link href="/articles" className="text-sm dark:text-gray-300 hover:underline mb-4 inline-block" prefetch>
         <FontAwesomeIcon icon={faArrowLeft} /> Back to Articles
@@ -89,5 +84,6 @@ export default async function ArticlePage({
       ) : null}
       <ContentBlock blocks={article?.content} />
     </article>
-  );
+    <TrendingArticles trendingArticles={trendingArticles} />
+    </>);
 }

@@ -13,7 +13,7 @@ export const metadata = {
 
 export default async function Home() {
 
-  const [featuredArticles, breakingNews] = await Promise.all([listArticles({limit:6}), getBreakingNews()]);
+  const [featuredArticles, breakingNews] = await Promise.all([listArticles({limit:6, featured:"true"}), getBreakingNews()]);
   return (
     
     

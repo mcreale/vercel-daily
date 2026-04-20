@@ -36,4 +36,6 @@ export type BreakingNewsItem = {
   urgent: boolean;
 };
 
-export type Article = components["schemas"]["Article"] 
+export type Article = components["schemas"]["Article"]  & {
+  formattedDate: string;
+}
