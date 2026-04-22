@@ -6,6 +6,8 @@ import "./globals.css";
 
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { SubscriptionProvider } from "@/components/subscription-provider";
+import RscRevalidateAckServer from "@/components/rsc-revalidate-ack-server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,11 +36,15 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Header />
-        <main className="flex flex-col flex-1 items-center justify-center bg-background font-sans dark:bg-black">  
-          {children}
-        </main>
-        <Footer />
+        <SubscriptionProvider
+          rscRevalidateAck={<RscRevalidateAckServer />}
+        >
+          <Header />
+          <main className="flex flex-col flex-1 items-center justify-center bg-background font-sans dark:bg-black">
+            {children}
+          </main>
+          <Footer />
+        </SubscriptionProvider>
         </body>
     </html>
   );

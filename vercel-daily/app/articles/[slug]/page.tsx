@@ -1,12 +1,11 @@
-import ContentBlock from "@/components/content-block";
-import trendingArticles from "@/components/trending-articles";
-import TrendingArticles from "@/components/trending-articles";
+import ArticleContent from "@/components/articles/article-content";
+
+import TrendingArticles from "@/components/articles/trending-articles";
 import { getArticle, getTrendingArticles, listArticles } from "@/lib/data";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
   const articles = await listArticles();
@@ -82,7 +81,10 @@ export default async function ArticlePage({
           priority
         />
       ) : null}
-      <ContentBlock blocks={article?.content} />
+      <ArticleContent
+        content={article?.content}
+        excerpt={article?.excerpt ?? ""}
+      />
     </article>
     <TrendingArticles trendingArticles={trendingArticles} />
     </>);
