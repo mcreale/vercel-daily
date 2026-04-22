@@ -4,13 +4,13 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useSubscription } from "@/components/subscription-provider";
 
-export default function SubscribeButton() {
+export default function SubscribeButton({className = 'button'}: {className?: string}) {
   const { subscribed, busy, toggle } = useSubscription();
 
   return (
     <button
       type="button"
-      className="button"
+      className={className}
       onClick={() => void toggle()}
       disabled={busy}
     >

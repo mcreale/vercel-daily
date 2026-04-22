@@ -30,7 +30,7 @@ export default async function ArticleContent({
         {excerpt ? (
           <p className="mb-4 text-sm text-amber-900/90 dark:text-amber-200/90">{excerpt}</p>
         ) : null}
-        <SubscribeButton />
+        <SubscribeButton className="dark-button"/>
       </div>
     </div>
   );

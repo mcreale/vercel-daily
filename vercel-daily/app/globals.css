@@ -10,6 +10,7 @@
   --swiper-theme-color: #ffffff;
   --swiper-pagination-color: #ffffff;
   --swiper-pagination-bullet-inactive-color: #ffffff;
+  --swiper-pagination-bottom: 44px;
 }
 
 @theme inline {
@@ -55,5 +56,11 @@ body {
 } 
 
 .mySwiper{
-  @apply pb-20!;
+  @apply pb-30!;
+  .swiper-slide{
+    @apply flex h-auto items-stretch;
+  }
+  .swiper-button-next, .swiper-button-prev{
+   z-index: 11;
+  }
 }

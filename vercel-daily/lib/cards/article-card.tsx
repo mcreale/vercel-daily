@@ -16,7 +16,7 @@ export default function ArticleCard({ article }: { article: Article }) {
             alt={title ?? "Article"}
             width={250}
             height={250}
-            className="w-full h-auto rounded mb-2 object-cover"
+            className="w-full max-h-[190px] rounded mb-2 object-cover"
           />
         ) : null}
         <div className="font-semibold p-4">{title}</div>
