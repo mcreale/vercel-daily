@@ -1,7 +1,7 @@
 'use server';
 
 import { cookies } from "next/headers";
-import { activateSubscription, deactivateSubscription, getSubscriptionStatus } from "./data";
+import { deactivateSubscription, getSubscriptionStatus, upsertSubscription } from "./data";
 
 async function getTokenFromCookies(): Promise<string | undefined> {
   const cookieStore = await cookies();
@@ -25,7 +25,7 @@ export async function isSubscribed(): Promise<boolean> {
 export async function subscribe(): Promise<void> {
   const subscriptionToken = await getTokenFromCookies();  
 
-  const subscriptionSTatus = await activateSubscription(subscriptionToken);
+  const subscriptionSTatus = await upsertSubscription(subscriptionToken);
   
   // Set the subscription token cookie if it's not already set
   if (!subscriptionToken) {

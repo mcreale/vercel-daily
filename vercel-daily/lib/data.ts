@@ -80,6 +80,17 @@ export async function listCategories(): Promise<Category[]> {
   return data.data as Category[];
 }
 
+export async function searchArticles(search?: string, categories?: string[], limit: number=12 ): Promise<Article[]> {
+  const {data, response, error} = await getNewsApiClient().GET("/articles", {
+    params: { query:{search, categories, limit }},
+  });
+  if (error || !response.ok || !data || !data.data) {
+    throw new Error("Failed to search articles");
+  }
+  return data.data.map(a=>formattedArticle(a)) as Article[];
+}
+
+
 function getSubscriptionTokenOptions(token?: string) {
   if (!token) {
     throw new Error("Subscription token is required");
