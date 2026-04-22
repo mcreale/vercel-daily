@@ -54,22 +54,25 @@ function ContentBlockItem({ block }: { block: ContentBlockType }) {
       );
     case "image":
       return (
-        <figure className="my-8">
-          <Image
-            src={block.src}
-            alt={block.alt}
-            width={1200}
-            height={675}
-            className="h-auto w-full max-w-full rounded-lg border border-zinc-200 object-cover dark:border-zinc-700"
-            sizes="(max-width: 768px) 100vw, 42rem"
-          />
-          {block.caption ? (
-            <figcaption className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
-              <CustomMarkdown markdownContent={block.caption} />
-            </figcaption>
-          ) : null}
-        </figure>
-      );
+        <>
+        {block.src &&
+          <figure className="my-8">
+            <Image
+              src={block.src}
+              alt={block.alt}
+              width={1200}
+              height={675}
+              className="h-auto w-full max-w-full rounded-lg border border-zinc-200 object-cover dark:border-zinc-700"
+              sizes="(max-width: 768px) 100vw, 42rem"
+            />
+            {block.caption ? (
+              <figcaption className="mt-2 text-center text-sm text-zinc-600 dark:text-zinc-400">
+                <CustomMarkdown markdownContent={block.caption} />
+              </figcaption>
+            ) : null}
+          </figure>}
+        </>
+        );
     default: {
       const notOtherwiseFound: never = block;
       return notOtherwiseFound;
