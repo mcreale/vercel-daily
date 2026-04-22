@@ -8,6 +8,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { SubscriptionProvider } from "@/components/subscription-provider";
 import RscRevalidateAckServer from "@/components/rsc-revalidate-ack-server";
+import { getThemeInitScript } from "@/lib/theme";
 import { Suspense } from "react";
 
 const geistSans = Geist({
@@ -35,8 +36,12 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+        <script
+          dangerouslySetInnerHTML={{ __html: getThemeInitScript() }}
+        />
         <SubscriptionProvider
           rscRevalidateAck={
             <Suspense fallback={null}>
