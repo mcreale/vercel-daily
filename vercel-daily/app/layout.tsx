@@ -8,6 +8,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { SubscriptionProvider } from "@/components/subscription-provider";
 import RscRevalidateAckServer from "@/components/rsc-revalidate-ack-server";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,13 +38,19 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <SubscriptionProvider
-          rscRevalidateAck={<RscRevalidateAckServer />}
+          rscRevalidateAck={
+            <Suspense fallback={null}>
+              <RscRevalidateAckServer />
+            </Suspense>
+          }
         >
           <Header />
           <main className="flex flex-col flex-1 items-center justify-center bg-background font-sans dark:bg-black">
             {children}
           </main>
-          <Footer />
+          <Suspense>
+            <Footer />
+          </Suspense>
         </SubscriptionProvider>
         </body>
     </html>

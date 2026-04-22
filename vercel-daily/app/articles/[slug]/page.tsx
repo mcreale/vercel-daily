@@ -6,6 +6,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export async function generateStaticParams() {
   const articles = await listArticles();
@@ -20,7 +21,7 @@ export async function generateStaticParams() {
 export async function  generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
 
   const { slug } = await params;
-  const [article, trendingArticles] = await Promise.all([getArticle(slug), getTrendingArticles()]);
+  const article = await getArticle(slug);
 
   return {
     title: article?.title ?? "Vercel Daily Article: Vercel Daily",
@@ -81,10 +82,16 @@ export default async function ArticlePage({
           priority
         />
       ) : null}
-      <ArticleContent
-        content={article?.content}
-        excerpt={article?.excerpt ?? ""}
-      />
+      <Suspense
+        fallback={
+          <div className="h-32 max-w-2xl animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800/80" />
+        }
+      >
+        <ArticleContent
+          content={article?.content}
+          excerpt={article?.excerpt ?? ""}
+        />
+      </Suspense>
     </article>
     <TrendingArticles trendingArticles={trendingArticles} />
     </>);

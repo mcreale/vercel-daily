@@ -1,6 +1,4 @@
-import Image from "next/image";
 import { listArticles, getBreakingNews } from "@/lib/data";
-import type { components } from "@/lib/types/news-api";
 import Hero from "@/components/hero";
 import BreakingNews from "@/components/breaking-news";
 import { Suspense } from "react";
@@ -11,20 +9,39 @@ export const metadata = {
   description: "News and insights for modern web developers.",
 };
 
+async function BreakingNewsLoader() {
+  const breakingNews = await getBreakingNews();
+  return <BreakingNews breakingNews={breakingNews} />;
+}
+
 export default async function Home() {
-
-  const [featuredArticles, breakingNews] = await Promise.all([listArticles({limit:6, featured:"true"}), getBreakingNews()]);
+  const featuredArticles = await listArticles({
+    limit: 6,
+    featured: "true",
+  });
   return (
-    
-    
-      <div className="flex flex-col w-full">
-        <Suspense fallback={<div>Loading...</div>}>
-          <BreakingNews breakingNews={breakingNews}/>
-        </Suspense>
-        <Hero />
+    <div className="flex w-full flex-col">
+      <Suspense
+        fallback={
+          <section
+            className="bg-gray-100 py-4 dark:bg-gray-800"
+            aria-hidden
+          >
+            <div className="container">
+              <div className="h-6 max-w-3xl animate-pulse rounded bg-zinc-300/60 dark:bg-zinc-600/50" />
+            </div>
+          </section>
+        }
+      >
+        <BreakingNewsLoader />
+      </Suspense>
+      <Hero />
 
-        <ArticleList listArticles={featuredArticles} title="Featured Articles" showMoreLink />
-
+      <ArticleList
+        listArticles={featuredArticles}
+        title="Featured Articles"
+        showMoreLink
+      />
     </div>
   );
 }

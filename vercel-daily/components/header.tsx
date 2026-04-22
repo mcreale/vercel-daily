@@ -16,7 +16,9 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <Link href="/" className="nav-link">Home</Link>
           <Link href="/search" className="nav-link">Search</Link>          
+          <Suspense fallback={<div className="w-32 h-10 bg-gray-300 rounded animate-pulse" />}>
           <SubscribeButton />
+          </Suspense>
         </div>
         
       </div>
