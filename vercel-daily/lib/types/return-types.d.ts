@@ -1,5 +1,5 @@
 import type { FetchResponse } from "openapi-fetch";
-import type { paths } from "./news-api";
+import type { components, paths } from "./news-api";
 
 type Json = "application/json";
 
@@ -39,3 +39,7 @@ export type BreakingNewsItem = {
 export type Article = components["schemas"]["Article"]  & {
   formattedDate: string;
 }
+
+export type Category = components["schemas"]["Category"];
+
+export type SubscriptionStatus = components["schemas"]["SubscriptionStatus"];

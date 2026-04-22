@@ -1,9 +1,11 @@
 import "server-only";
 import { getNewsApiClient } from "./api/client";
 import type { NewsApiQueries } from "./types/queries";
-import type { NewsApiTypes, BreakingNewsItem, Article } from "./types/return-types";
+import type { NewsApiTypes, BreakingNewsItem, Article, Category, SubscriptionStatus } from "./types/return-types";
 import { cacheLife } from "next/cache";
 import { components } from "./types/news-api";
+import { randomUUID } from "crypto";
+import { get } from "http";
 
 export async function listArticles(
   query?: NewsApiQueries.ListArticlesQuery,
@@ -66,4 +68,76 @@ export async function getBreakingNews(): Promise<BreakingNewsItem> {
     throw new Error("Failed to fetch breaking news");
   }
   return data.data as BreakingNewsItem;
+}
+
+export async function listCategories(): Promise<Category[]> {
+  'use cache';
+  cacheLife("long");
+  const {data, response, error} = await getNewsApiClient().GET("/categories");
+  if (error || !response.ok || !data || !data.data) {
+    throw new Error("Failed to fetch categories");
+  }
+  return data.data as Category[];
+}
+
+function getSubscriptionTokenOptions(token?: string) {
+  if (!token) {
+    throw new Error("Subscription token is required");
+  }
+  return { params: {header:{ "x-subscription-token": token??'' }}};
+}
+
+
+export async function getSubscriptionStatus(token: string): Promise<SubscriptionStatus> {
+  //this should not be cached
+
+  const {data, response, error} = await getNewsApiClient().GET("/subscription", getSubscriptionTokenOptions(token));
+  if (error || !response.ok || !data || !data.data) {
+    throw new Error("Failed to fetch subscription status");
+  }
+  return data.data as SubscriptionStatus;
+}
+
+
+export async function upsertSubscription(token?: string): Promise<SubscriptionStatus> {
+  if (!token) {
+    const sub =  await createSubscription();
+    token = sub.token;
+  }
+  if (!token) {
+    throw new Error("Failed to create subscription");
+  }
+  return await activateSubscription(token!);
+}
+  
+
+export async function createSubscription(): Promise<SubscriptionStatus> {
+  // if (!token) {
+  //   token = randomUUID().toString();
+  // }
+  const {data, response, error} = await getNewsApiClient().POST("/subscription/create");
+  
+  if (error || !response.ok || !data || !data.data) {
+  
+    throw new Error("Failed to subscribe");
+  }
+  return data.data as SubscriptionStatus;
+}
+
+export async function activateSubscription(token: string): Promise<SubscriptionStatus> {
+ 
+  const {data, response, error} = await getNewsApiClient().POST("/subscription", getSubscriptionTokenOptions(token));
+  
+  if (error || !response.ok || !data || !data.data) {
+    throw new Error("Failed to subscribe");
+  }
+  return data.data as SubscriptionStatus;
+}
+
+export async function deactivateSubscription(token: string): Promise<SubscriptionStatus> {
+  const {data, response, error} = await getNewsApiClient().DELETE("/subscription", getSubscriptionTokenOptions(token)); 
+  if (error || !response.ok || !data || !data.data) {
+    throw new Error("Failed to unsubscribe");
+  }
+  return data.data as SubscriptionStatus;
 }

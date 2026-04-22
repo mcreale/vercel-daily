@@ -8,7 +8,7 @@ export default function ArticleCard({ article }: { article: Article }) {
   const { title, excerpt, slug, image } = article;
 
   return (
-    <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 bg-gray-800 border-bg-gray-800" >
+    <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 dark:bg-gray-800 dark:border-gray-800 border-gray-300 overflow-hidden" >
       <Link href={`/articles/${slug ?? ""}`} className="text-black dark:text-white hover:underline">
         {image ? (
           <Image
@@ -16,12 +16,12 @@ export default function ArticleCard({ article }: { article: Article }) {
             alt={title ?? "Article"}
             width={250}
             height={250}
-            className="w-full max-h-[190px] rounded mb-2 object-cover"
+            className="w-full max-h-[190px] mb-2 object-cover border-b border-gray-300 dark:border-gray-700"
           />
         ) : null}
         <div className="font-semibold p-4">{title}</div>
       </Link>
-      <p className="text-sm text-zinc-600 dark:text-zinc-400 p-4">{excerpt}</p>
+      <p className="text-sm text-zinc-600 dark:text-zinc-400 p-4 pb-8">{excerpt}</p>
     </div>
   );
 }

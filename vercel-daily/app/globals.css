@@ -2,22 +2,28 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-.dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-}
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
   --swiper-navigation-sides-offset: -10px;
   --swiper-navigation-top-offset: 90%; 
+  --swiper-navigation-color: #000000;
+  --swiper-theme-color: #000000;
+  --swiper-pagination-color: #000000;
+  --swiper-pagination-bullet-inactive-color: #000000;
+  --swiper-pagination-bottom: 44px;
+} 
+
+
+.dark{
+  --background: #0a0a0a;
+  --foreground: #fafafa;
   --swiper-navigation-color: #ffffff;
   --swiper-theme-color: #ffffff;
   --swiper-pagination-color: #ffffff;
   --swiper-pagination-bullet-inactive-color: #ffffff;
-  --swiper-pagination-bottom: 44px;
 }
+
 
 @theme inline {
   --color-background: var(--background);
@@ -41,10 +47,12 @@ body {
 }
 
 .button {
-  @apply inline-block border bg-black text-white px-6 py-3 rounded-lg font-semibold hover:text-black hover:bg-white  border-black transition-colors duration-300;
+  @apply inline-block border px-6 py-3 rounded-lg font-semibold bg-white text-black hover:text-white hover:bg-black border-white transition-colors duration-300 
+  dark:bg-black dark:border-black dark:text-white dark:hover:text-black dark:hover:bg-white;
 }
 .dark-button{
-  @apply inline-block border bg-white text-black px-6 py-3 rounded-lg font-semibold hover:text-white hover:bg-black border-white transition-colors duration-300;
+  @apply inline-block border px-6 py-3 rounded-lg font-semibold bg-black text-white hover:text-black hover:bg-white border-black transition-colors duration-300 
+  dark:bg-white dark:border-white dark:text-black dark:hover:text-white dark:hover:bg-black;
 }
 .content-block{ 
   p{
