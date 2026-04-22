@@ -48,9 +48,7 @@ export default function RootLayout({
           <main className="flex flex-col flex-1 items-center justify-center bg-background font-sans dark:bg-black">
             {children}
           </main>
-          <Suspense>
-            <Footer />
-          </Suspense>
+          <Footer />
         </SubscriptionProvider>
         </body>
     </html>

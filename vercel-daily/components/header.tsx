@@ -17,7 +17,7 @@ export default function Header() {
           <Link href="/" className="nav-link">Home</Link>
           <Link href="/search" className="nav-link">Search</Link>          
           <Suspense fallback={<div className="w-32 h-10 bg-gray-300 rounded animate-pulse" />}>
-          <SubscribeButton />
+            <SubscribeButton />
           </Suspense>
         </div>
         
