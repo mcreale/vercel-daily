@@ -1,21 +1,27 @@
 import ArticleCard from "@/lib/cards/article-card";
 import { Article } from "@/lib/types/return-types";
+import { faSadCry, faSadTear } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 
-export default function ArticleList({listArticles, title, showMoreLink, eagerLoadCount}: {listArticles: Article[], title: string, showMoreLink: boolean, eagerLoadCount?: number}) {
+export default function ArticleList({listArticles, title, showMoreLink, eagerLoadCount, showFoundArticlesCount}: {listArticles: Article[], title: string, showMoreLink: boolean, eagerLoadCount?: number, showFoundArticlesCount?: boolean}) {
     try { 
       if (!listArticles?.length) {
         return (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        <section id="no-results" className="py-12 container">
+          <p className="text-lg text-zinc-600 dark:text-zinc-400">
             No articles matched your search.
+            <FontAwesomeIcon icon={faSadTear} className="mx-2" />
+            Try a different search criteria or check back later for new articles.
           </p>
+          </section>
         );
       }
       return (
         <section id="featured-articles" className="py-12 container">
           <div className="flex items-between mb-8 ">
-            <h2 className="text-4xl font-bold dark:text-white">{title ?? "Featured Articles"}</h2>
-            {showMoreLink && <Link href="/articles" className="text-sm dark:text-gray-300 hover:underline ml-auto flex items-center" prefetch>
+            <h2 className="text-4xl font-bold dark:text-white">{showFoundArticlesCount ? `${listArticles.length} Articles Found` : title ?? "Featured Articles"}</h2>
+            {showMoreLink && <Link href="/search" className="text-sm dark:text-gray-300 hover:underline ml-auto flex items-center" prefetch>
             </Link>}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

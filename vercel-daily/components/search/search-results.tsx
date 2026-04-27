@@ -18,10 +18,11 @@ export default async function SearchResults({
   const articles = await searchArticles(
     query,
     category,
+    (query || category) ? 5 : undefined
   );
   return (
     <ArticleList
-      title={`Articles${query ? ` matching "${query}"` : ""}`}
+      title={`${articles.length} Articles${query ? ` matching "${query}"` : ""} ${category ? ` in category "${category}"` : ""}`}
       listArticles={articles}
       showMoreLink={false}
       eagerLoadCount={6}
