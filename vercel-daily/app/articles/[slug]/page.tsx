@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { metadata } from "../page";
 
 
 export async function generateStaticParams() {
@@ -41,6 +42,9 @@ export async function  generateMetadata({ params }: { params: Promise<{ slug: st
         },
       ] : undefined,
     },
+    alternates:{
+      canonical: articleCanonicalUrl(slug),
+    }
   };
 }
 
