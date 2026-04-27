@@ -1,10 +1,10 @@
 import ArticleList from "@/components/articles/article-list";
 import { searchArticles } from "@/lib/data";
 
-function categoryFromSearchParam(cat: string | string[] | undefined): string | undefined {
+function categoryFromSearchParam(cat: string | string[] | undefined): "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined {
   if (cat == null) return undefined;
   const first = (Array.isArray(cat) ? cat[0] : cat)?.trim();
-  return first || undefined;
+  return first as "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined;
 }
 
 export default async function SearchResults({
@@ -17,7 +17,7 @@ export default async function SearchResults({
   const category = categoryFromSearchParam(params.cat);
   const articles = await searchArticles(
     query,
-    category ? [category] : undefined,
+    category,
   );
   return (
     <ArticleList

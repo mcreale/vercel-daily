@@ -4,6 +4,11 @@ import SearchHeader from "@/components/search/search-header";
 import SearchFallback from "@/components/search/search-fallback";
 import { listCategories } from "@/lib/data";
 
+export const metadata = {
+  title: "Vercel Daily: Article Search",
+  description: "Search for articles on Vercel Daily by keyword or category.",
+};
+
 export default async function SearchPage({
   searchParams,
 }: {
