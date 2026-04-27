@@ -4,8 +4,16 @@ import type { NewsApiQueries } from "./types/queries";
 import type { NewsApiTypes, BreakingNewsItem, Article, Category, SubscriptionStatus } from "./types/return-types";
 import { cacheLife } from "next/cache";
 import { components } from "./types/news-api";
-import { randomUUID } from "crypto";
-import { get } from "http";
+
+/*article fetching and formatting functions */
+
+function formattedArticle(article: components["schemas"]["Article"]): Article {
+  return {...article, formattedDate: new Date(article.publishedAt??'').toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })} as Article;
+  }
 
 export async function listArticles(
   query?: NewsApiQueries.ListArticlesQuery,
@@ -27,13 +35,6 @@ export async function listArticles(
   return result.data.data?.map(a=>formattedArticle(a)) as Article[];
 }
 
-function formattedArticle(article: components["schemas"]["Article"]): Article {
-  return {...article, formattedDate: new Date(article.publishedAt??'').toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })} as Article;
-  }
 export async function getArticle(id: string): Promise<Article> {
   'use cache';
   cacheLife("article");
@@ -80,9 +81,12 @@ export async function listCategories(): Promise<Category[]> {
   return data.data as Category[];
 }
 
-export async function searchArticles(search?: string, categories?: string[], limit: number=12 ): Promise<Article[]> {
+export async function searchArticles(search?: string, category?: "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined, limit: number=12 ): Promise<Article[]> {
+  'use cache';
+  cacheLife("article");
+  console.log("Searching articles with query:", {search, category, limit});
   const {data, response, error} = await getNewsApiClient().GET("/articles", {
-    params: { query:{search, categories, limit }},
+    params: { query:{search, category, limit }},
   });
   if (error || !response.ok || !data || !data.data) {
     throw new Error("Failed to search articles");
@@ -91,6 +95,7 @@ export async function searchArticles(search?: string, categories?: string[], lim
 }
 
 
+/* Subscription management functions */
 function getSubscriptionTokenOptions(token?: string) {
   if (!token) {
     throw new Error("Subscription token is required");
@@ -104,6 +109,9 @@ export async function getSubscriptionStatus(token: string): Promise<Subscription
 
   const {data, response, error} = await getNewsApiClient().GET("/subscription", getSubscriptionTokenOptions(token));
   if (error || !response.ok || !data || !data.data) {
+    if (response.status === 404) {
+      throw new Error("Subscription token not found");
+    }
     throw new Error("Failed to fetch subscription status");
   }
   return data.data as SubscriptionStatus;

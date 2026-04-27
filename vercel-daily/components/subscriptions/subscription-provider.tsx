@@ -17,8 +17,9 @@ type SubscriptionContextValue = {
   initialLoading: boolean;
   /** True during initial load, subscribe request, and until the next RSC payload is observed */
   busy: boolean;
-  toggle: () => Promise<void>;
-  refresh: () => Promise<void>;
+  /** Resolves to the subscription state after the operation (or current state if a toggle was skipped). */
+  toggle: () => Promise<boolean>;
+  refresh: () => Promise<boolean>;
   onRscRevalidateComplete: () => void;
 };
 
@@ -69,13 +70,16 @@ export function SubscriptionProvider({
     }, RSC_ACK_TIMEOUT_MS);
   }, []);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (): Promise<boolean> => {
     try {
       const res = await fetch("/api/subscribe", { credentials: "same-origin" });
       const data = await res.json();
-      setSubscribed(Boolean(data.subscribed));
+      const next = Boolean(data.subscribed);
+      setSubscribed(next);
+      return next;
     } catch {
       setSubscribed(false);
+      return false;
     } finally {
       setInitialLoading(false);
     }
@@ -85,24 +89,27 @@ export function SubscriptionProvider({
     void refresh();
   }, [refresh]);
 
-  const toggle = useCallback(async () => {
-    if (fetching || rscRevalidatePending) return;
+  const toggle = useCallback(async (): Promise<boolean> => {
+    if (fetching || rscRevalidatePending) return subscribed;
     setFetching(true);
     try {
+      let next: boolean;
       if (!subscribed) {
         const res = await fetch("/api/subscribe", {
           method: "POST",
           credentials: "same-origin",
         });
         const data = await res.json();
-        setSubscribed(Boolean(data.subscribed));
+        next = Boolean(data.subscribed);
+        setSubscribed(next);
       } else {
         const res = await fetch("/api/subscribe", {
           method: "DELETE",
           credentials: "same-origin",
         });
         const data = await res.json();
-        setSubscribed(Boolean(data.subscribed));
+        next = Boolean(data.subscribed);
+        setSubscribed(next);
       }
       beginRscRevalidate();
       try {
@@ -110,8 +117,9 @@ export function SubscriptionProvider({
       } catch {
         onRscRevalidateComplete();
       }
+      return next;
     } catch {
-      await refresh();
+      return await refresh();
     } finally {
       setFetching(false);
     }

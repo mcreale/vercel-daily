@@ -1,8 +1,8 @@
 import { listArticles, getBreakingNews } from "@/lib/data";
-import Hero from "@/components/hero";
-import BreakingNews from "@/components/breaking-news";
+import Hero from "@/components/homepage/hero";
+import BreakingNews from "@/components/homepage/breaking-news";
 import { Suspense } from "react";
-import ArticleList from "@/components/article-list";
+import ArticleList from "@/components/articles/article-list";
 
 export const metadata = {
   title: "Vercel Daily",
@@ -24,11 +24,11 @@ export default async function Home() {
       <Suspense
         fallback={
           <section
-            className="bg-gray-100 py-4 dark:bg-gray-800"
+            className="bg-gray-300 py-4 dark:bg-gray-800"
             aria-hidden
           >
             <div className="container">
-              <div className="h-6 max-w-3xl animate-pulse rounded bg-zinc-300/60 dark:bg-zinc-600/50" />
+              <div className="h-5 max-w-full animate-pulse rounded bg-zinc-600/60 dark:bg-zinc-600/50" />
             </div>
           </section>
         }

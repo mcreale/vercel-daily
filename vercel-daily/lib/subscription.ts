@@ -16,10 +16,22 @@ export async function isSubscribed(): Promise<boolean> {
   if (!subscriptionToken) {
     return false;
   }
+  try{
+    const subscriptionStatus = await getSubscriptionStatus(subscriptionToken);
+    console.log("Subscription status:", subscriptionStatus);
+    return subscriptionStatus.status === "active";  
+  }
+  catch(error){
+    console.error("Error checking subscription status:", error);
+    if (error instanceof Error && error.message === "Subscription token not found") {
+      // If fetching subscription status fails, we can assume the token is invalid and remove it from cookies
+      const cookieStore = await cookies();
+      cookieStore.delete("subscription_token");
+    }
+    return false;
+  }
   
-  const subscriptionStatus = await getSubscriptionStatus(subscriptionToken);
-  console.log("Subscription status:", subscriptionStatus);
-  return subscriptionStatus.status === "active";
+  
 }
 
 export async function subscribe(): Promise<void> {

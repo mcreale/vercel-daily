@@ -1,5 +1,5 @@
 import { listArticles } from "@/lib/data";
-import ArticleList from "@/components/article-list";
+import ArticleList from "@/components/articles/article-list";
 
 export const metadata = {
   title: "Vercel Daily: Articles",

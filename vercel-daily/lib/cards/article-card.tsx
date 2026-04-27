@@ -4,8 +4,8 @@ import Link from "next/link";
 
 type Article = components["schemas"]["Article"];
 
-export default function ArticleCard({ article }: { article: Article }) {
-  const { title, excerpt, slug, image } = article;
+export default function ArticleCard({ article, loadingType }: { article: Article, loadingType?: "eager" | "lazy" }) {
+  const { title, excerpt, slug, image, } = article;
 
   return (
     <div className="border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 dark:bg-gray-800 dark:border-gray-800 border-gray-300 overflow-hidden" >
@@ -16,6 +16,7 @@ export default function ArticleCard({ article }: { article: Article }) {
             alt={title ?? "Article"}
             width={250}
             height={250}
+            loading={loadingType}
             className="w-full max-h-[190px] mb-2 object-cover border-b border-gray-300 dark:border-gray-700"
           />
         ) : null}

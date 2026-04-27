@@ -40,10 +40,10 @@ body {
 }
 
 .container {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
 }
 .nav-link{
-  @apply text-white hover:text-gray-300 transition-colors dark:text-black;
+  @apply text-white hover:text-gray-300 transition-colors dark:text-black text-xs sm:text-sm;
 }
 
 .button {
@@ -53,6 +53,9 @@ body {
 .dark-button{
   @apply inline-block border px-6 py-3 rounded-lg font-semibold bg-black text-white hover:text-black hover:bg-white border-black transition-colors duration-300 
   dark:bg-white dark:border-white dark:text-black dark:hover:text-white dark:hover:bg-black;
+}
+.button-border{
+  @apply border  dark:border-white border-black;
 }
 .content-block{ 
   p{

@@ -7,7 +7,7 @@ export default function BreakingNews({breakingNews}: {breakingNews: BreakingNews
   return (
     <>
       {breakingNews &&
-      <section className="dark:bg-gray-800 bg-gray-300 text-black dark:text-gray-100 py-4">
+      <section className="dark:bg-gray-800 bg-gray-300 text-black dark:text-gray-100 py-4 text-sm">
         <div className="container">
           {urgent ? <span><FontAwesomeIcon icon={faBolt} className="text-yellow-500 mr-2" /> <span className="bg-white text-black rounded-xl font-bold px-2 uppercase mr-2">Urgent</span></span> 
           

@@ -1,5 +1,4 @@
 import { isSubscribed, subscribe, unsubscribe } from "@/lib/subscription";
-import { cookies } from "next/headers";
 
 export async function GET() {
   const subscribed = await isSubscribed();
