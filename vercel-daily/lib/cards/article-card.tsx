@@ -21,7 +21,13 @@ export default function ArticleCard({ article, loadingType }: { article: Article
           />
         ) : null}
         <div className="font-semibold p-4">{title}</div>
+
       </Link>
+      <p className="text-xs text-zinc-600 dark:text-zinc-400 p-4 py-0">Published {new Date(article?.publishedAt ?? "").toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}</p>
       <p className="text-sm text-zinc-600 dark:text-zinc-400 p-4 pb-8">{excerpt}</p>
     </div>
   );

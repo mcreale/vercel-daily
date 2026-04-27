@@ -23,8 +23,21 @@ const geistMono = Geist_Mono({
 
 config.autoAddCss = false
 export const metadata: Metadata = {
-  title: "Vercel Daily",
+   metadataBase: new URL(
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3001'
+  ),
+  title: {
+    default: "Vercel Daily",
+    template: "%s | Vercel Daily",
+  },
   description: "News and insights for modern web developers.",
+  openGraph: {
+    siteName: "Vercel Daily",
+    locale: "en_US",
+    type: "website",
+  }
 };
 
 export default function RootLayout({

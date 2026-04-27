@@ -29,10 +29,10 @@ export async function  generateMetadata({ params }: { params: Promise<{ slug: st
   const article = await getArticle(slug);
 
   return {
-    title: article?.title ?? "Vercel Daily Article: Vercel Daily",
+    title: article?.title ?? "Vercel Daily Article",
     description: article?.excerpt ?? "Read this article on Vercel Daily.",
     openGraph: {
-      title: article?.title ?? "Vercel Daily Article: Vercel Daily", 
+      title: article?.title ?? "Vercel Daily Article", 
       description: article?.excerpt ?? "Read this article on Vercel Daily.",
       url: articleCanonicalUrl(slug),
       images: article?.image ? [

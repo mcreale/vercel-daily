@@ -7,6 +7,11 @@ import ArticleList from "@/components/articles/article-list";
 export const metadata = {
   title: "Vercel Daily",
   description: "News and insights for modern web developers.",
+  openGraph: {
+    title: "Vercel Daily",
+    description: "News and insights for modern web developers.",
+    url: process.env.NEXT_PUBLIC_BASE_URL
+  }
 };
 
 async function BreakingNewsLoader() {
