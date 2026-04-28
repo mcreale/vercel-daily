@@ -1,4 +1,4 @@
-import type { components } from "../types/news-api";
+import type { components } from "../../lib/types/news-api";
 import Image from "next/image";
 import Link from "next/link";
 

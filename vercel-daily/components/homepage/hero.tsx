@@ -8,7 +8,7 @@ export default function Hero() {
       <div className="container mx-auto ">
         <h1 className="text-5xl md:text-6xl font-bold mb-4 sm:w-2/3">News and insights for modern web developers.</h1>
         <p className="text-lg dark:text-gray-300 text-gray-700">Changelogs, engineering deep dives, customer stories, and community updates &mdash; all in one place.</p>
-        <div className="mt-8 flex md:block items-center gap-4">
+        <div className="mt-8 flex  items-center gap-4">
           <Link prefetch={false} href="/search" className="dark-button">
             Explore Articles
           </Link>

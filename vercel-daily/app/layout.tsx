@@ -7,7 +7,7 @@ import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { SubscriptionProvider } from "@/components/subscriptions/subscription-provider";
-import RscRevalidateAckServer from "@/components/rsc-revalidate-ack-server";
+import RscRevalidateAckServer from "@/components/subscriptions/rsc-revalidate-ack-server";
 import { getThemeInitScript } from "@/lib/theme";
 import { Suspense } from "react";
 
