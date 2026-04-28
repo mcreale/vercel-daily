@@ -32,8 +32,9 @@ export namespace NewsApiTypes {
 }
 
 export type BreakingNewsItem = {
-  summary: string;
+  headline: string;
   urgent: boolean;
+  slug: string;
 };
 
 export type Article = components["schemas"]["Article"]  & {

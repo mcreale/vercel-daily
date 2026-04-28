@@ -4,13 +4,12 @@ import { getArticle, getTrendingArticles, listArticles } from "@/lib/data";
 import { JsonLdScript } from "@/lib/json-ld/json-ld-wrapper";
 import { newsArticleJsonLd } from "@/lib/json-ld/news-article";
 import { articleCanonicalUrl } from "@/lib/site";
-import { Article } from "@/lib/types/return-types";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { metadata } from "../page";
+
 
 
 export async function generateStaticParams() {
