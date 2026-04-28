@@ -15,7 +15,7 @@ import { useState } from "react";
     if(subscribed){
       return (
       <>
-        <span className={`mr-2 ${variant==="header" ? "hidden md:inline" : ""}`}>Unsubcribe</span>
+        <span className={`mr-2 ${variant==="header" ? "hidden md:inline" : ""}`}>Unsubscribe</span>
         <FontAwesomeIcon icon={faBellSlash} className="" />
       </>
       )

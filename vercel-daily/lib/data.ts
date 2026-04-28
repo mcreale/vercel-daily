@@ -73,7 +73,7 @@ export async function getTrendingArticles(): Promise<Article[]> {
 
 export async function getBreakingNews(): Promise<BreakingNewsItem> {
   'use cache';
-  cacheLife("seconds");
+  cacheLife("trending");
   const {data, response, error} = await getNewsApiClient().GET("/breaking-news");
   if (error || !response.ok  || !data) {
     throw new Error("Failed to fetch breaking news");
