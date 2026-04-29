@@ -1,31 +1,22 @@
-import ArticleList from "@/components/articles/article-list";
-import { searchArticles } from "@/lib/data";
+import { CategorySlug } from "@/lib/types/return-types";
+import SearchArticles from "./search-articles";
+import { Suspense } from "react";
 
-function categoryFromSearchParam(cat: string | string[] | undefined): "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined {
-  if (cat == null) return undefined;
-  const first = (Array.isArray(cat) ? cat[0] : cat)?.trim();
-  return first as "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined;
-}
 
 export default async function SearchResults({
+  categorySlug,
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; cat?: string | string[] }>;
+  categorySlug?: CategorySlug;
+  searchParams: Promise<{ q?: string}>;
 }) {
   const params = await searchParams;
   const query = params.q?.trim() || undefined;
-  const category = categoryFromSearchParam(params.cat);
-  const articles = await searchArticles(
-    query,
-    category,
-    (query || category) ? 5 : undefined
-  );
+  
+  
   return (
-    <ArticleList
-      title={`${articles.length} Articles${query ? ` matching "${query}"` : ""} ${category ? ` in category "${category}"` : ""}`}
-      listArticles={articles}
-      showMoreLink={false}
-      eagerLoadCount={6}
-    />
+    <Suspense fallback={<p className="text-center text-gray-600 dark:text-gray-400 py-20">Loading search results...</p>}>
+    <SearchArticles query={query} category={categorySlug} limit={12} />
+    </Suspense>
   );
 }
