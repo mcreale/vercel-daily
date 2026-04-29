@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { getSubscriptionStatus, subscribeUser, unsubscribeUser } from "@/app/actions/subscription";
 
 type SubscriptionContextValue = {
   subscribed: boolean;
@@ -72,8 +73,7 @@ export function SubscriptionProvider({
 
   const refresh = useCallback(async (): Promise<boolean> => {
     try {
-      const res = await fetch("/api/subscribe", { credentials: "same-origin" });
-      const data = await res.json();
+      const data = await getSubscriptionStatus();
       const next = Boolean(data.subscribed);
       setSubscribed(next);
       return next;
@@ -95,19 +95,11 @@ export function SubscriptionProvider({
     try {
       let next: boolean;
       if (!subscribed) {
-        const res = await fetch("/api/subscribe", {
-          method: "POST",
-          credentials: "same-origin",
-        });
-        const data = await res.json();
+        const data = await subscribeUser();
         next = Boolean(data.subscribed);
         setSubscribed(next);
       } else {
-        const res = await fetch("/api/subscribe", {
-          method: "DELETE",
-          credentials: "same-origin",
-        });
-        const data = await res.json();
+        const data = await unsubscribeUser();
         next = Boolean(data.subscribed);
         setSubscribed(next);
       }

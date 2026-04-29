@@ -1,6 +1,6 @@
 import ArticleCard from "@/components/articles/article-card";
 import { Article } from "@/lib/types/return-types";
-import { faSadCry, faSadTear } from "@fortawesome/free-solid-svg-icons";
+import { faSadTear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 

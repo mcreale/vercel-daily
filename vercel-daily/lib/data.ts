@@ -1,8 +1,8 @@
 import "server-only";
 import { getNewsApiClient } from "./api/client";
 import type { NewsApiQueries } from "./types/queries";
-import type { NewsApiTypes, BreakingNewsItem, Article, Category, SubscriptionStatus } from "./types/return-types";
-import { cacheLife } from "next/cache";
+import type { NewsApiTypes, BreakingNewsItem, Article, Category, PaginationMeta, SubscriptionStatus } from "./types/return-types";
+import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { components } from "./types/news-api";
 
 /*article fetching and formatting functions */
@@ -35,19 +35,27 @@ export async function listArticles(
   return result.data.data?.map(a=>formattedArticle(a)) as Article[];
 }
 
-export async function getArticle(id: string): Promise<Article> {
+export async function getArticle(idOrSlug: string): Promise<Article> {
   'use cache';
   cacheLife("article");
   const {data, response, error} = await getNewsApiClient().GET("/articles/{id}", {
-    params: { path: { id } },
+    params: { path: { id: idOrSlug } },
   });
 
   if (error || !response.ok || !data || !data.data) {
-    throw new Error(`Failed to fetch article with id ${id}`);
+    throw new Error(`Failed to fetch article with id ${idOrSlug}`);
   }
   else
   {
-    return formattedArticle(data.data);
+    const article = formattedArticle(data.data);
+    // we can update the cache tag for this article to ensure that any cached data that includes this article is also updated
+     cacheTag(`article:${article.id}`);
+
+    if (article.slug) {
+      cacheTag(`article:${article.slug}`);
+    }
+
+    return article;
   }
 }
 
@@ -63,12 +71,21 @@ export async function getTrendingArticles(): Promise<Article[]> {
 }
 
 export async function getBreakingNews(): Promise<BreakingNewsItem> {
-  // dont' use cache here because it rotates and changes so we don't want to have it cached
+  'use cache';
+  cacheLife("breakingNews");
   const {data, response, error} = await getNewsApiClient().GET("/breaking-news");
   if (error || !response.ok  || !data) {
     throw new Error("Failed to fetch breaking news");
   }
-  return data.data as BreakingNewsItem;
+
+  //sadly the news API returns a slightly different shape for breaking news, so we need to map it to our BreakingNewsItem type
+  // we need to get the slug from the articleId by fetching the article, since the breaking news endpoint doesn't return the slug directly
+  let slug = '';
+  if (data.data && data.data.articleId) {
+    const article = await getArticle(data.data?.articleId ?? '');
+    slug = article.slug ?? '' ;
+  }
+  return { ...data.data, slug } as BreakingNewsItem;
 }
 
 export async function listCategories(): Promise<Category[]> {
@@ -81,17 +98,35 @@ export async function listCategories(): Promise<Category[]> {
   return data.data as Category[];
 }
 
-export async function searchArticles(search?: string, category?: "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined, limit: number=12 ): Promise<Article[]> {
-  'use cache';
+export async function getCategoryfromSlug( slug: string ) {
+  const categories = await listCategories();
+  return categories.find((c) => c.slug === slug);
+}
+
+export type SearchArticlesResult = {
+  articles: Article[];
+  pagination: PaginationMeta | undefined;
+};
+
+export async function searchArticles(
+  search?: string,
+  category?: "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined,
+  limit: number = 12,
+  page: number = 1,
+): Promise<SearchArticlesResult> {
+  "use cache";
   cacheLife("article");
-  console.log("Searching articles with query:", {search, category, limit});
-  const {data, response, error} = await getNewsApiClient().GET("/articles", {
-    params: { query:{search, category, limit }},
+
+  const { data, response, error } = await getNewsApiClient().GET("/articles", {
+    params: { query: { search, category, limit, page } },
   });
   if (error || !response.ok || !data || !data.data) {
     throw new Error("Failed to search articles");
   }
-  return data.data.map(a=>formattedArticle(a)) as Article[];
+  return {
+    articles: data.data.map((a) => formattedArticle(a)) as Article[],
+    pagination: data.meta?.pagination,
+  };
 }
 
 
@@ -105,8 +140,9 @@ function getSubscriptionTokenOptions(token?: string) {
 
 
 export async function getSubscriptionStatus(token: string): Promise<SubscriptionStatus> {
-  //this should not be cached
-
+  'use cache';
+  cacheLife("seconds");
+  cacheTag(`subscription-status-${token}`);
   const {data, response, error} = await getNewsApiClient().GET("/subscription", getSubscriptionTokenOptions(token));
   if (error || !response.ok || !data || !data.data) {
     if (response.status === 404) {
@@ -126,6 +162,7 @@ export async function upsertSubscription(token?: string): Promise<SubscriptionSt
   if (!token) {
     throw new Error("Failed to create subscription");
   }
+  
   return await activateSubscription(token!);
 }
   
@@ -150,6 +187,7 @@ export async function activateSubscription(token: string): Promise<SubscriptionS
   if (error || !response.ok || !data || !data.data) {
     throw new Error("Failed to subscribe");
   }
+  updateTag(`subscription-status-${token}`);
   return data.data as SubscriptionStatus;
 }
 
@@ -158,5 +196,6 @@ export async function deactivateSubscription(token: string): Promise<Subscriptio
   if (error || !response.ok || !data || !data.data) {
     throw new Error("Failed to unsubscribe");
   }
+  updateTag(`subscription-status-${token}`);
   return data.data as SubscriptionStatus;
 }

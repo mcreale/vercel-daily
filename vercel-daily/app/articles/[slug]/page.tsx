@@ -4,13 +4,12 @@ import { getArticle, getTrendingArticles, listArticles } from "@/lib/data";
 import { JsonLdScript } from "@/lib/json-ld/json-ld-wrapper";
 import { newsArticleJsonLd } from "@/lib/json-ld/news-article";
 import { articleCanonicalUrl } from "@/lib/site";
-import { Article } from "@/lib/types/return-types";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { metadata } from "../page";
+
 
 
 export async function generateStaticParams() {
@@ -76,20 +75,23 @@ export default async function ArticlePage({
           })}
           {article?.author ? ` by ${article.author.name}` : ''}
         </p>
-        
       </aside>
 
-      {article?.image ? (
-        <Image
-          src={article.image}
-          alt={article.title ?? ""}
-          width={1200}
-          height={675}
-          className="mb-8 h-auto w-full max-w-full rounded-lg object-cover"
-          sizes="(max-width: 768px) 100vw, 42rem"
-          priority
-        />
-      ) : null}
+      {article?.image && (
+        <div className="mb-12 flex justify-center">
+        <figure className="relative w-full max-w-3xl aspect-[16/9] rounded-lg border border-gray-300 dark:border-gray-700 flex">
+          <Image
+            src={article.image}
+            alt={article.title ?? ""}
+            fill
+            className="mb-8 h-auto w-full max-w-full rounded-lg object-cover"
+            sizes="(max-width: 768px) 100vw, 42rem"
+            priority
+          />
+        </figure>
+        </div>
+      )}
+      
       <Suspense
         fallback={
           <div className="h-32 max-w-2xl animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800/80" />
