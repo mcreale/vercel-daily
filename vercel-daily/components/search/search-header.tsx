@@ -1,28 +1,30 @@
 "use client";
 
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faSpinner, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   useEffect,
   useState,
   useTransition,
-  type FormEventHandler,
+  SubmitEventHandler
 } from "react";
 import Form from "next/form";
+import path from "path";
 
 function navigateToSearch(
   router: ReturnType<typeof useRouter>,
   searchParams: ReturnType<typeof useSearchParams>,
   qRaw: string | undefined,
+  pathname: string = "/search"
 ) {
   const params = new URLSearchParams(searchParams.toString());
   const trimmed = qRaw?.trim() ?? "";
   if (trimmed) params.set("q", trimmed);
   else params.delete("q");
   const qs = params.toString();
-  router.push(qs ? `/search?${qs}` : "/search");
+  router.push(qs ? `${pathname}?${qs}` : pathname);
 }
 
 export default function SearchHeader() {
@@ -32,6 +34,9 @@ export default function SearchHeader() {
   const qFromUrl = searchParams.get("q") ?? "";
   const [localQ, setLocalQ] = useState(qFromUrl);
 
+  const pathname = usePathname();
+
+  const actionUrl = pathname;
   useEffect(() => {
     setLocalQ(qFromUrl);
   }, [qFromUrl]);
@@ -47,36 +52,27 @@ export default function SearchHeader() {
       if (next.length <= 2) return;
       if (next === searchParams.get("q")?.trim()) return;
       startTransition(() => {
-        navigateToSearch(router, searchParams, next);
+        navigateToSearch(router, searchParams, next, pathname);
       });
     }, 500);
 
     return () => window.clearTimeout(id);
-  }, [localQ, qFromUrl, router, searchParams]);
+  }, [localQ, qFromUrl, router, searchParams, pathname]);
 
   function onClear() {
     startTransition(() => {
-      router.push("/search");
+      router.push(pathname);
     });
   }
-
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const q = String(data.get("q") ?? "");
-    startTransition(() => {
-      navigateToSearch(router, searchParams, q);
-    });
-  };
 
   return (
     <section className="container">
       <h1 className="pb-4 text-3xl font-bold">Search for Articles</h1>
-      <Form
-        action="/search"
-        onSubmit={onSubmit}
+        <Form
+          action={actionUrl}
         className="mb-6 flex flex-wrap items-center gap-3 rounded bg-gray-100 p-6 dark:bg-zinc-800/60 sm:gap-4"
         aria-busy={isPending}
+        replace={true}
       >
         <label className="sr-only" htmlFor="search-articles">
           Search articles
@@ -94,29 +90,26 @@ export default function SearchHeader() {
         />
 
         <div className="flex flex-1 items-center justify-end gap-2 sm:flex-initial">
-          <Link
-            href="/search"
-            className="button dark:button-border flex-1 bg-zinc-800/60 text-center dark:bg-zinc-800/60"
-            onClick={onClear}
-          >
-            {isPending ? (
-              <FontAwesomeIcon icon={faSpinner} spin className="h-3.5 w-3.5" />
-            ) : (
-              "Clear"
-            )}
-          </Link>
+          {localQ && 
+            <Link
+              href={pathname}
+              className="button dark:button-border flex-1 bg-zinc-800/60 text-center dark:bg-zinc-800/60"
+              onClick={onClear}
+            >
+                <FontAwesomeIcon icon={faTimes} className="h-3.5 w-3.5" />
+            </Link>
+          }
           <button
             type="submit"
             disabled={isPending}
-            className="dark-button inline-flex min-w-[7.5rem] shrink-0 flex-1 items-center justify-center gap-2 disabled:pointer-events-none disabled:opacity-70"
+            className="dark-button cursor-pointer inline-flex min-w-[7.5rem] shrink-0 flex-1 items-center justify-center gap-2 disabled:pointer-events-none disabled:opacity-70"
           >
             {isPending ? (
               <>
                 <FontAwesomeIcon icon={faSpinner} spin className="h-3.5 w-3.5" />
-                <span>Searching</span>
               </>
             ) : (
-              "Search"
+              <FontAwesomeIcon icon={faMagnifyingGlass} className="h-3.5 w-3.5" />
             )}
           </button>
         </div>

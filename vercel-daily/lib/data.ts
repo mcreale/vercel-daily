@@ -99,6 +99,11 @@ export async function listCategories(): Promise<Category[]> {
   return data.data as Category[];
 }
 
+export async function getCategoryfromSlug( slug: string ) {
+  const categories = await listCategories();
+  return categories.find((c) => c.slug === slug);
+}
+
 export async function searchArticles(search?: string, category?: "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined, limit: number=12 ): Promise<Article[]> {
   'use cache';
   cacheLife("article");
