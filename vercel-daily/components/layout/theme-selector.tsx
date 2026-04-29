@@ -2,97 +2,69 @@
 
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useLayoutEffect, useSyncExternalStore } from "react";
-import { THEME_STORAGE_KEY, type ThemeChoice } from "@/lib/theme";
+import { useTheme } from "next-themes";
+import { useSyncExternalStore } from "react";
 
-const themeListeners = new Set<() => void>();
-
-function emitThemeChange() {
-  themeListeners.forEach((l) => l());
-}
-
-function getStoredTheme(): ThemeChoice | null {
-  if (typeof window === "undefined") return null;
-  const v = localStorage.getItem(THEME_STORAGE_KEY);
-  if (v === "light" || v === "dark") return v;
-  return null;
-}
-
-function getThemeSnapshot(): ThemeChoice {
-  const stored = getStoredTheme();
-  return (
-    stored ??
-    (document.documentElement.classList.contains("dark") ? "dark" : "light")
+function useIsClient() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
   );
-}
-
-function subscribeTheme(onStoreChange: () => void) {
-  themeListeners.add(onStoreChange);
-  const onStorage = (e: StorageEvent) => {
-    if (e.key !== THEME_STORAGE_KEY) return;
-    onStoreChange();
-  };
-  window.addEventListener("storage", onStorage);
-  return () => {
-    themeListeners.delete(onStoreChange);
-    window.removeEventListener("storage", onStorage);
-  };
-}
-
-function applyTheme(theme: ThemeChoice) {
-  document.documentElement.classList.toggle("dark", theme === "dark");
 }
 
 export default function ThemeSelector() {
-  const theme = useSyncExternalStore(
-    subscribeTheme,
-    getThemeSnapshot,
-    () => "light" as ThemeChoice
-  );
+  const isClient = useIsClient();
+  const { resolvedTheme, setTheme } = useTheme();
 
-  useLayoutEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+  if (!isClient) {
+    return (
+      <div
+        className="flex items-center gap-2"
+        aria-hidden
+        suppressHydrationWarning
+      >
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">Theme</span>
+        <div className="inline-flex min-h-8 min-w-[7.25rem] rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-600" />
+      </div>
+    );
+  }
 
-  const select = useCallback((next: ThemeChoice) => {
-    localStorage.setItem(THEME_STORAGE_KEY, next);
-    applyTheme(next);
-    emitThemeChange();
-  }, []);
+  const isLight = resolvedTheme === "light";
+  const isDark = resolvedTheme === "dark";
 
   return (
     <div
       className="flex items-center gap-2"
       role="group"
       aria-label="Color theme"
-      suppressHydrationWarning
     >
       <span className="text-sm text-zinc-500 dark:text-zinc-400">Theme</span>
       <div className="inline-flex rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-600">
         <button
           type="button"
-          onClick={() => select("light")}
+          onClick={() => setTheme("light")}
           className={[
             "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-            theme === "light"
+            isLight
               ? "bg-zinc-200 text-zinc-900 dark:bg-zinc-600 dark:text-zinc-50"
               : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800",
           ].join(" ")}
-          aria-pressed={theme === "light"}
+          aria-pressed={isLight}
         >
           <FontAwesomeIcon icon={faSun} className="h-3.5 w-3.5" aria-hidden />
           Light
         </button>
         <button
           type="button"
-          onClick={() => select("dark")}
+          onClick={() => setTheme("dark")}
           className={[
             "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors",
-            theme === "dark"
+            isDark
               ? "bg-zinc-200 text-zinc-900 dark:bg-zinc-600 dark:text-zinc-50"
               : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800",
           ].join(" ")}
-          aria-pressed={theme === "dark"}
+          aria-pressed={isDark}
         >
           <FontAwesomeIcon icon={faMoon} className="h-3.5 w-3.5" aria-hidden />
           Dark

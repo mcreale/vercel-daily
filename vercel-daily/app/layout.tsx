@@ -7,8 +7,8 @@ import "./globals.css";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { SubscriptionProvider } from "@/components/subscriptions/subscription-provider";
+import { ThemeProvider } from "@/components/layout/theme-provider";
 import RscRevalidateAckServer from "@/components/subscriptions/rsc-revalidate-ack-server";
-import { getThemeInitScript } from "@/lib/theme";
 import { Suspense } from "react";
 
 const geistSans = Geist({
@@ -52,23 +52,22 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <script
-          dangerouslySetInnerHTML={{ __html: getThemeInitScript() }}
-        />
-        <SubscriptionProvider
-          rscRevalidateAck={
-            <Suspense fallback={null}>
-              <RscRevalidateAckServer />
-            </Suspense>
-          }
-        >
-          <Header />
-          <main className="flex flex-col flex-1 items-center justify-center bg-background font-sans dark:bg-black">
-            {children}
-          </main>
-          <Footer />
-        </SubscriptionProvider>
-        </body>
+        <ThemeProvider>
+          <SubscriptionProvider
+            rscRevalidateAck={
+              <Suspense fallback={null}>
+                <RscRevalidateAckServer />
+              </Suspense>
+            }
+          >
+            <Header />
+            <main className="flex flex-col flex-1 items-center justify-center bg-background font-sans dark:bg-black">
+              {children}
+            </main>
+            <Footer />
+          </SubscriptionProvider>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
