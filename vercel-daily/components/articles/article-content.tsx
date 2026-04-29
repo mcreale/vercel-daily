@@ -13,7 +13,7 @@ export default async function ArticleContent({
   content: ContentBlockType[] | undefined;
   excerpt: string;
 }) {
-  await connection();
+  //await connection();
   const subscribed = await isSubscribed();
 
   if (subscribed) {
