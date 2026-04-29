@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Geist, Geist_Mono } from "next/font/google";
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
@@ -52,7 +53,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        {/* <ThemeProvider> */}
+        <ThemeProvider>
           <SubscriptionProvider
             rscRevalidateAck={
               <Suspense fallback={null}>
@@ -65,8 +66,9 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <SpeedInsights />
           </SubscriptionProvider>
-        {/* </ThemeProvider> */}
+        </ThemeProvider>
       </body>
     </html>
   );
