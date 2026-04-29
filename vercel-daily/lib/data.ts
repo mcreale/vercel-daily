@@ -1,7 +1,7 @@
 import "server-only";
 import { getNewsApiClient } from "./api/client";
 import type { NewsApiQueries } from "./types/queries";
-import type { NewsApiTypes, BreakingNewsItem, Article, Category, SubscriptionStatus } from "./types/return-types";
+import type { NewsApiTypes, BreakingNewsItem, Article, Category, PaginationMeta, SubscriptionStatus } from "./types/return-types";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { components } from "./types/news-api";
 
@@ -103,18 +103,30 @@ export async function getCategoryfromSlug( slug: string ) {
   return categories.find((c) => c.slug === slug);
 }
 
-export async function searchArticles(search?: string, category?: "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined, limit: number=12 ): Promise<Article[]> {
-  'use cache';
+export type SearchArticlesResult = {
+  articles: Article[];
+  pagination: PaginationMeta | undefined;
+};
+
+export async function searchArticles(
+  search?: string,
+  category?: "changelog" | "engineering" | "customers" | "company-news" | "community" | undefined,
+  limit: number = 12,
+  page: number = 1,
+): Promise<SearchArticlesResult> {
+  "use cache";
   cacheLife("article");
-  
-  console.log("Searching articles with query:", {search, category, limit});
-  const {data, response, error} = await getNewsApiClient().GET("/articles", {
-    params: { query:{search, category, limit }},
+
+  const { data, response, error } = await getNewsApiClient().GET("/articles", {
+    params: { query: { search, category, limit, page } },
   });
   if (error || !response.ok || !data || !data.data) {
     throw new Error("Failed to search articles");
   }
-  return data.data.map(a=>formattedArticle(a)) as Article[];
+  return {
+    articles: data.data.map((a) => formattedArticle(a)) as Article[],
+    pagination: data.meta?.pagination,
+  };
 }
 
 

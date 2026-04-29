@@ -8,8 +8,8 @@ import { CategorySlug } from "@/lib/types/return-types";
 
 
 async function getCategoryfromSlug( slug: string ) {
+  "use cache";
   const categories = await listCategories();
-  console.log(categories);
   return categories.find((c) => c.slug === slug);
 }
 
@@ -25,7 +25,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
   }
 
   const category = await getCategoryfromSlug(slug);
-  console.log(category);
   return {
     title: category?.name ?? "Search",
     description: `Search for ${category?.name ?? "articles"} on Vercel Daily by keyword or category.`,
@@ -34,7 +33,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug?: st
 
 export async function generateStaticParams() {
   const categories = await listCategories();
-  console.log(categories);
   return categories
     .filter((c) => c.slug)
     .map((c) => ({ slug: [c.slug!] }));

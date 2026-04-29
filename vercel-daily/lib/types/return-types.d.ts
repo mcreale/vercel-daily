@@ -44,6 +44,8 @@ export type Article = components["schemas"]["Article"]  & {
 
 export type Category = components["schemas"]["Category"];
 
+export type PaginationMeta = components["schemas"]["PaginationMeta"];
+
 export type SubscriptionStatus = components["schemas"]["SubscriptionStatus"];
 
 export type CategorySlug = "changelog" | "engineering" | "customers" | "company-news" | "community";
