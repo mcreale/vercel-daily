@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
     breakingNews:{
       stale: 30, // 30 seconds
       revalidate: 30, // 30 seconds
-      expire: 30, // 30 seconds
+      expire: 240, // 4 minutes
     },
     subscriberStatus:{
       stale: 60, // 1 minute
