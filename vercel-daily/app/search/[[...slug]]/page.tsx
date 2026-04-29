@@ -3,15 +3,8 @@ import SearchResults from "@/components/search/search-results";
 import SearchHeader from "@/components/search/search-header";
 import SearchCategories from "@/components/search/search-categories";
 import SearchFallback from "@/components/search/search-fallback";
-import { listCategories } from "@/lib/data";
+import { getCategoryfromSlug, listCategories } from "@/lib/data";
 import { CategorySlug } from "@/lib/types/return-types";
-
-
-async function getCategoryfromSlug( slug: string ) {
-  "use cache";
-  const categories = await listCategories();
-  return categories.find((c) => c.slug === slug);
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug?: string[] }> }) {
   "use cache";

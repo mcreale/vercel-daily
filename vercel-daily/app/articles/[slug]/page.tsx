@@ -87,8 +87,6 @@ export default async function ArticlePage({
             className="mb-8 h-auto w-full max-w-full rounded-lg object-cover"
             sizes="(max-width: 768px) 100vw, 42rem"
             priority
-            placeholder="blur"
-            blurDataURL={article.image}
           />
         </figure>
         </div>

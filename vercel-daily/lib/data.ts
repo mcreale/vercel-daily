@@ -35,7 +35,7 @@ export async function listArticles(
   return result.data.data?.map(a=>formattedArticle(a)) as Article[];
 }
 
-  export async function getArticle(idOrSlug: string): Promise<Article> {
+export async function getArticle(idOrSlug: string): Promise<Article> {
   'use cache';
   cacheLife("article");
   const {data, response, error} = await getNewsApiClient().GET("/articles/{id}", {
@@ -141,7 +141,7 @@ function getSubscriptionTokenOptions(token?: string) {
 
 export async function getSubscriptionStatus(token: string): Promise<SubscriptionStatus> {
   'use cache';
-  cacheLife("seconds")
+  cacheLife("seconds");
   cacheTag(`subscription-status-${token}`);
   const {data, response, error} = await getNewsApiClient().GET("/subscription", getSubscriptionTokenOptions(token));
   if (error || !response.ok || !data || !data.data) {

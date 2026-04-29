@@ -1,3 +1,5 @@
+'use server'
+
 import { isSubscribed, subscribe, unsubscribe } from "@/lib/subscription";
 
 type SubscriptionResponse = {
@@ -11,10 +13,9 @@ export async function getSubscriptionStatus(): Promise<SubscriptionResponse> {
 
 }
 
-export async function subscribeUser() : Promise<SubscriptionResponse> {
-   
+export async function subscribeUser(): Promise<SubscriptionResponse> {
   let message = "Subscribed successfully";
-  
+
   if (await isSubscribed()) {
     message = "Already subscribed";
   } else {

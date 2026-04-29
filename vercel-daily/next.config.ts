@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
     trending:{
       stale: 30, // 30 seconds
       revalidate: 60, // 1 minute
-      expire: 3600, // 1 minute
+      expire: 3600, // 1 hour
     },
     breakingNews:{
       stale: 30, // 30 seconds
