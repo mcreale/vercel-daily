@@ -37,13 +37,13 @@ export async function isSubscribed(): Promise<boolean> {
 export async function subscribe(): Promise<void> {
   const subscriptionToken = await getTokenFromCookies();  
 
-  const subscriptionSTatus = await upsertSubscription(subscriptionToken);
+  const subscriptionStatus = await upsertSubscription(subscriptionToken);
   
   // Set the subscription token cookie if it's not already set
   if (!subscriptionToken) {
-    const cookieStore = await cookies();
+      const cookieStore = await cookies();
 
-    cookieStore.set("subscription_token", subscriptionSTatus.token, {
+    cookieStore.set("subscription_token", subscriptionStatus.token, {
       path: "/",
       maxAge: 60 * 60 * 24 * 365, // 1 year
       sameSite: "lax",
@@ -57,5 +57,6 @@ export async function unsubscribe(): Promise<void> {
     return;
   }
   await deactivateSubscription(subscriptionToken);
-  
+  const cookieStore = await cookies();
+  cookieStore.delete("subscription_token");
 }

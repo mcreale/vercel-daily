@@ -51,8 +51,10 @@ export async function  generateMetadata({ params }: { params: Promise<{ slug: st
 
 export default async function ArticlePage({
   params,
+  subscribed=true
 }: {
   params: Promise<{ slug: string }>;
+  subscribed?: boolean;
 }) {
   const { slug } = await params;
   const [article, trendingArticles] = await Promise.all([getArticle(slug), getTrendingArticles()]);
@@ -92,19 +94,14 @@ export default async function ArticlePage({
         </div>
       )}
       
-      <Suspense
-        fallback={
-          <div className="h-32 max-w-2xl animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800/80" />
-        }
-      >
-        <JsonLdScript json={newsArticleJsonLd(article, articleCanonicalUrl(slug))} />
+      <JsonLdScript json={newsArticleJsonLd(article, articleCanonicalUrl(slug))} />
         <ArticleContent
           article={article}
           canonicalUrl={articleCanonicalUrl(slug)}
           content={article?.content}
           excerpt={article?.excerpt ?? ""}
+          subscribed={subscribed}
         />
-      </Suspense>
     </article>
     <TrendingArticles trendingArticles={trendingArticles} />
     </>);

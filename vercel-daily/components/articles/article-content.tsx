@@ -1,21 +1,18 @@
 import ContentBlock, { ContentBlockType } from "./content-block";
-import { isSubscribed } from "@/lib/subscription";
 import type { Article } from "@/lib/types/return-types";
 import SubscribeButton from "../subscriptions/subscribe-button";
-import { connection } from "next/server";
 
 export default async function ArticleContent({
   content,
   excerpt,
+  subscribed
 }: {
   article: Article;
   canonicalUrl: string;
   content: ContentBlockType[] | undefined;
   excerpt: string;
+  subscribed: boolean;
 }) {
-  //await connection();
-  const subscribed = await isSubscribed();
-
   if (subscribed) {
     return (
       <>  
