@@ -4,10 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 
-export default function BreakingNews({breakingNews}: {breakingNews: BreakingNewsItem}) {
+export default async function BreakingNews({breakingNews}: {breakingNews: BreakingNewsItem}) {
   "use cache";
   cacheLife("breakingNews"); 
-  
+
   const {headline, urgent, slug} = breakingNews;
   return (
     <>
