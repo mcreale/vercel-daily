@@ -2,33 +2,34 @@ import type { FetchResponse } from "openapi-fetch";
 import type { components, paths } from "./news-api";
 
 type Json = "application/json";
+type NoParams = Record<string, never>;
 
 /** Return types for `openapi-fetch` calls against the news API (success `data` | `error` + `response`). */
 export namespace NewsApiTypes {
   
-  export type ListArticles = FetchResponse<paths["/articles"]["get"], {}, Json>;
-  export type GetArticle = FetchResponse<paths["/articles/{id}"]["get"], {}, Json>;
+  export type ListArticles = FetchResponse<paths["/articles"]["get"], NoParams, Json>;
+  export type GetArticle = FetchResponse<paths["/articles/{id}"]["get"], NoParams, Json>;
   export type GetTrendingArticles = FetchResponse<
     paths["/articles/trending"]["get"],
-    {},
+    NoParams,
     Json
   >;
-  export type ListCategories = FetchResponse<paths["/categories"]["get"], {}, Json>;
-  export type GetBreakingNews = FetchResponse<paths["/breaking-news"]["get"], {}, Json>;
-  export type GetSubscription = FetchResponse<paths["/subscription"]["get"], {}, Json>;
-  export type Subscribe = FetchResponse<paths["/subscription"]["post"], {}, Json>;
-  export type Unsubscribe = FetchResponse<paths["/subscription"]["delete"], {}, Json>;
+  export type ListCategories = FetchResponse<paths["/categories"]["get"], NoParams, Json>;
+  export type GetBreakingNews = FetchResponse<paths["/breaking-news"]["get"], NoParams, Json>;
+  export type GetSubscription = FetchResponse<paths["/subscription"]["get"], NoParams, Json>;
+  export type Subscribe = FetchResponse<paths["/subscription"]["post"], NoParams, Json>;
+  export type Unsubscribe = FetchResponse<paths["/subscription"]["delete"], NoParams, Json>;
   export type CreateSubscription = FetchResponse<
     paths["/subscription/create"]["post"],
-    {},
+    NoParams,
     Json
   >;
   export type GetPublicationConfig = FetchResponse<
     paths["/publication/config"]["get"],
-    {},
+    NoParams,
     Json
   >;
-  export type HealthCheck = FetchResponse<paths["/health"]["get"], {}, Json>;
+  export type HealthCheck = FetchResponse<paths["/health"]["get"], NoParams, Json>;
 }
 
 export type BreakingNewsItem = {

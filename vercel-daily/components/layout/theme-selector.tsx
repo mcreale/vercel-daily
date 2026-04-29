@@ -2,8 +2,14 @@
 
 import { faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useSyncExternalStore } from "react";
 import { THEME_STORAGE_KEY, type ThemeChoice } from "@/lib/theme";
+
+const themeListeners = new Set<() => void>();
+
+function emitThemeChange() {
+  themeListeners.forEach((l) => l());
+}
 
 function getStoredTheme(): ThemeChoice | null {
   if (typeof window === "undefined") return null;
@@ -12,40 +18,46 @@ function getStoredTheme(): ThemeChoice | null {
   return null;
 }
 
+function getThemeSnapshot(): ThemeChoice {
+  const stored = getStoredTheme();
+  return (
+    stored ??
+    (document.documentElement.classList.contains("dark") ? "dark" : "light")
+  );
+}
+
+function subscribeTheme(onStoreChange: () => void) {
+  themeListeners.add(onStoreChange);
+  const onStorage = (e: StorageEvent) => {
+    if (e.key !== THEME_STORAGE_KEY) return;
+    onStoreChange();
+  };
+  window.addEventListener("storage", onStorage);
+  return () => {
+    themeListeners.delete(onStoreChange);
+    window.removeEventListener("storage", onStorage);
+  };
+}
+
 function applyTheme(theme: ThemeChoice) {
   document.documentElement.classList.toggle("dark", theme === "dark");
 }
 
 export default function ThemeSelector() {
-  const [theme, setTheme] = useState<ThemeChoice>("light");
+  const theme = useSyncExternalStore(
+    subscribeTheme,
+    getThemeSnapshot,
+    () => "light" as ThemeChoice
+  );
 
   useLayoutEffect(() => {
-    const stored = getStoredTheme();
-    const resolved =
-      stored ??
-      (document.documentElement.classList.contains("dark")
-        ? "dark"
-        : "light");
-    setTheme(resolved);
-    applyTheme(resolved);
-  }, []);
+    applyTheme(theme);
+  }, [theme]);
 
   const select = useCallback((next: ThemeChoice) => {
     localStorage.setItem(THEME_STORAGE_KEY, next);
-    setTheme(next);
     applyTheme(next);
-  }, []);
-
-  useLayoutEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key !== THEME_STORAGE_KEY || !e.newValue) return;
-      if (e.newValue === "light" || e.newValue === "dark") {
-        setTheme(e.newValue);
-        applyTheme(e.newValue);
-      }
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    emitThemeChange();
   }, []);
 
   return (
@@ -53,6 +65,7 @@ export default function ThemeSelector() {
       className="flex items-center gap-2"
       role="group"
       aria-label="Color theme"
+      suppressHydrationWarning
     >
       <span className="text-sm text-zinc-500 dark:text-zinc-400">Theme</span>
       <div className="inline-flex rounded-lg border border-zinc-200 p-0.5 dark:border-zinc-600">

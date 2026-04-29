@@ -1,4 +1,3 @@
-import { subscribe } from "diagnostics_channel";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -27,11 +26,16 @@ const nextConfig: NextConfig = {
     },
     trending:{
       stale: 30, // 30 seconds
-      revalidate: 3600, // 1 hour
-      expire: 3600 * 24, // 1 day
+      revalidate: 60, // 1 minute
+      expire: 3600, // 1 minute
+    },
+    breakingNews:{
+      stale: 30, // 30 seconds
+      revalidate: 30, // 30 seconds
+      expire: 30, // 30 seconds
     },
     subscriberStatus:{
-      stale: 60, // no staleness, always check with server
+      stale: 60, // 1 minute
       revalidate: 60, // 1 minute
       expire: 3600, // 1 hour
     }

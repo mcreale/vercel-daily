@@ -4,14 +4,8 @@ import { faMagnifyingGlass, faSpinner, faTimes } from "@fortawesome/free-solid-s
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  useEffect,
-  useState,
-  useTransition,
-  SubmitEventHandler
-} from "react";
+import { useEffect, useState, useTransition } from "react";
 import Form from "next/form";
-import path from "path";
 
 function navigateToSearch(
   router: ReturnType<typeof useRouter>,

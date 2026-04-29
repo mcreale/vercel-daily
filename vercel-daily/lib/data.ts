@@ -4,7 +4,6 @@ import type { NewsApiQueries } from "./types/queries";
 import type { NewsApiTypes, BreakingNewsItem, Article, Category, SubscriptionStatus } from "./types/return-types";
 import { cacheLife, cacheTag, updateTag } from "next/cache";
 import { components } from "./types/news-api";
-import { get } from "http";
 
 /*article fetching and formatting functions */
 
@@ -73,7 +72,7 @@ export async function getTrendingArticles(): Promise<Article[]> {
 
 export async function getBreakingNews(): Promise<BreakingNewsItem> {
   'use cache';
-  cacheLife("trending");
+  cacheLife("breakingNews");
   const {data, response, error} = await getNewsApiClient().GET("/breaking-news");
   if (error || !response.ok  || !data) {
     throw new Error("Failed to fetch breaking news");
