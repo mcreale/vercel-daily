@@ -18,7 +18,7 @@ function formattedArticle(article: components["schemas"]["Article"]): Article {
 export async function listArticles(
   query?: NewsApiQueries.ListArticlesQuery,
 ): Promise<Article[]> {
-  'use cache';
+  'use cache: remote';
   cacheLife("article");
   const client = getNewsApiClient();
   let result: NewsApiTypes.ListArticles;
@@ -36,7 +36,7 @@ export async function listArticles(
 }
 
 export async function getArticle(idOrSlug: string): Promise<Article> {
-  'use cache';
+  'use cache: remote';
   cacheLife("article");
   const {data, response, error} = await getNewsApiClient().GET("/articles/{id}", {
     params: { path: { id: idOrSlug } },
@@ -60,7 +60,7 @@ export async function getArticle(idOrSlug: string): Promise<Article> {
 }
 
 export async function getTrendingArticles(): Promise<Article[]> {
-  'use cache';
+  'use cache: remote';
   cacheLife("trending");
   const result = await getNewsApiClient().GET("/articles/trending");
   if (result.error || !result.response.ok || !result.data) {
@@ -71,7 +71,7 @@ export async function getTrendingArticles(): Promise<Article[]> {
 }
 
 export async function getBreakingNews(): Promise<BreakingNewsItem> {
-  'use cache';
+  'use cache: remote';
   cacheLife("breakingNews");
   console.log("Fetching breaking news...");
   const {data, response, error} = await getNewsApiClient().GET("/breaking-news");
@@ -90,7 +90,7 @@ export async function getBreakingNews(): Promise<BreakingNewsItem> {
 }
 
 export async function listCategories(): Promise<Category[]> {
-  'use cache';
+  'use cache: remote';
   cacheLife("long");
   const {data, response, error} = await getNewsApiClient().GET("/categories");
   if (error || !response.ok || !data || !data.data) {
@@ -141,7 +141,7 @@ function getSubscriptionTokenOptions(token?: string) {
 
 
 export async function getSubscriptionStatus(token: string): Promise<SubscriptionStatus> {
-  'use cache';
+  'use cache: remote';
   cacheLife("seconds");
   cacheTag(`subscription-status-${token}`);
   const {data, response, error} = await getNewsApiClient().GET("/subscription", getSubscriptionTokenOptions(token));
