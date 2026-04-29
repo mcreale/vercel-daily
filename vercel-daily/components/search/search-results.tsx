@@ -1,5 +1,4 @@
 import { CategorySlug } from "@/lib/types/return-types";
-import SearchArticles from "./search-articles";
 import { Suspense } from "react";
 import { getCategoryfromSlug, searchArticles } from "@/lib/data";
 import ArticleList from "../articles/article-list";
