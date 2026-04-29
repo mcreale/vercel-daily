@@ -52,7 +52,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ThemeProvider>
+        {/* <ThemeProvider> */}
           <SubscriptionProvider
             rscRevalidateAck={
               <Suspense fallback={null}>
@@ -66,7 +66,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </SubscriptionProvider>
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
